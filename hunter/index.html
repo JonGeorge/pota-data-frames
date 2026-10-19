@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POTA Hunter</title>
+<style>
+  :root {
+    --bg: #2E2720;       /* bark */
+    --tile: #3B3229;     /* stat tiles, shaded rows */
+    --rule: #4A3F34;     /* divider */
+    --text: #F1EBE2;
+    --text-2: #D8CFC2;
+    --muted: #A89B8C;
+    --label: #B9C4A8;    /* sage */
+    --accent: #D9875A;   /* terracotta */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: Arial, sans-serif; color: var(--text); }
+  .card {
+    width: 100%; max-width: 640px; min-height: 296px;
+    background: var(--bg); border-radius: 16px;
+    padding: 16px 18px 28px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .top { display: flex; align-items: center; gap: 16px; }
+  .id { display: flex; align-items: center; gap: 12px; padding-right: 16px; text-decoration: none; color: inherit; }
+  .badge { width: 44px; height: 44px; border-radius: 22px; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .eyebrow { font-size: 11px; letter-spacing: 2px; color: var(--label); }
+  .call { font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: .5px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex-grow: 1; }
+  .stat { background: var(--tile); border-radius: 12px; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .num { font-size: 24px; font-weight: 700; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .lbl { font-size: 11px; letter-spacing: 1px; color: var(--label); }
+  .recent { border-top: 1px solid var(--rule); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .recent-head { display: flex; justify-content: space-between; align-items: center; }
+  .recent-head .src { font-size: 11px; color: var(--muted); text-decoration: none; }
+  .recent-head .src:hover { color: var(--text-2); }
+  .list {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(5, auto); grid-auto-flow: column;
+    column-gap: 16px; row-gap: 2px;
+  }
+  .row { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 6px; font-size: 12px; color: var(--text-2); min-width: 0; font-variant-numeric: tabular-nums; }
+  .row.shade { background: var(--tile); }
+  .row .n { width: 18px; color: var(--muted); flex-shrink: 0; }
+  .row .act { font-weight: 700; font-size: 13px; color: var(--text); width: 92px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .ref { color: var(--accent); width: 72px; flex-shrink: 0; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .ref:hover { text-decoration: underline; }
+  .row .bm { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .msg { font-size: 12px; color: var(--muted); padding: 4px 6px; }
+  @media (max-width: 560px) {
+    .top { flex-wrap: wrap; }
+    .list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+  }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="top">
+    <a class="id" id="profileLink" href="https://pota.app" target="_blank" rel="noopener">
+      <div class="badge">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E2720" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 19l7-12 4 6 2-3 7 9z"></path><path d="M7 19c2-2 4-2 6 0"></path></svg>
+      </div>
+      <div>
+        <div class="eyebrow">POTA HUNTER</div>
+        <div class="call" id="call">&nbsp;</div>
+      </div>
+    </a>
+    <div class="stats">
+      <div class="stat"><div class="num" id="parks">—</div><div class="lbl">PARKS</div></div>
+      <div class="stat"><div class="num" id="qsos">—</div><div class="lbl">QSOS</div></div>
+      <div class="stat"><div class="num" id="awards">—</div><div class="lbl">AWARDS</div></div>
+    </div>
+  </div>
+  <div class="recent">
+    <div class="recent-head">
+      <div class="eyebrow">LAST 10 HUNTED</div>
+      <a class="src" href="https://pota.app" target="_blank" rel="noopener">pota.app</a>
+    </div>
+    <ol class="list" id="list"><li class="msg">Loading…</li></ol>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- Settings ----
+  // Callsign comes from ?call=XXXX in the URL; falls back to DEFAULT_CALL.
+  // Count comes from ?count=N (1–25); falls back to 10.
+  var DEFAULT_CALL = '';
+  var params = new URLSearchParams(location.search);
+  var raw = (params.get('call') || '').trim().toUpperCase();
+  // Letters, digits and "/" only (allows portable calls like CALLSIGN/P); max 15 chars.
+  var CALLSIGN = /^[A-Z0-9\/]{3,15}$/.test(raw) ? raw : DEFAULT_CALL;
+  var c = parseInt(params.get('count'), 10);
+  var COUNT = (c >= 1 && c <= 25) ? c : 10;
+  var API = 'https://api.pota.app/profile/' + encodeURIComponent(CALLSIGN);
+
+  document.getElementById('call').textContent = CALLSIGN;
+  document.getElementById('profileLink').href = 'https://pota.app/#/profile/' + encodeURIComponent(CALLSIGN);
+  document.title = CALLSIGN + ' POTA Hunter';
+  document.querySelector('.recent-head .eyebrow').lastChild.textContent = 'LAST ' + COUNT + ' HUNTED';
+
+  var list = document.getElementById('list');
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = String(text); // textContent: never injects HTML
+    return e;
+  }
+  function fmt(n) {
+    return (typeof n === 'number' && isFinite(n)) ? n.toLocaleString('en-US') : '—';
+  }
+  function showMsg(text) {
+    list.textContent = '';
+    list.style.gridTemplateRows = 'none';
+    list.appendChild(el('li', 'msg', text));
+  }
+
+  function render(data) {
+    var stats = (data && data.stats) || {};
+    var hunter = stats.hunter || {};
+    document.getElementById('parks').textContent = fmt(hunter.parks);
+    document.getElementById('qsos').textContent = fmt(hunter.qsos);
+    document.getElementById('awards').textContent = fmt(stats.awards);
+
+    var qsos = (data && data.recent_activity && data.recent_activity.hunter_qsos) || [];
+    if (!Array.isArray(qsos)) qsos = [];
+    qsos = qsos.slice().sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    }).slice(0, COUNT);
+
+    if (!qsos.length) { showMsg('No recent hunter contacts yet.'); return; }
+
+    list.textContent = '';
+    var perCol = Math.ceil(qsos.length / 2);
+    list.style.gridTemplateRows = 'repeat(' + perCol + ', auto)';
+
+    qsos.forEach(function (q, i) {
+      var li = el('li', 'row' + ((i % perCol) % 2 === 0 ? ' shade' : ''));
+      var when = q.date ? new Date(q.date + 'Z') : null;
+      li.title = [q.park, q.location, when && !isNaN(when) ? when.toUTCString().slice(5, 22) + ' UTC' : '']
+        .filter(Boolean).join(' · ');
+      li.appendChild(el('span', 'n', String(i + 1).padStart(2, '0')));
+      li.appendChild(el('span', 'act', q.callsign || '—'));
+      var ref = el('a', 'ref', q.reference || '—');
+      if (q.reference) {
+        ref.href = 'https://pota.app/#/park/' + encodeURIComponent(q.reference);
+        ref.target = '_blank'; ref.rel = 'noopener';
+      }
+      li.appendChild(ref);
+      li.appendChild(el('span', 'bm', [q.band, q.mode].filter(Boolean).join(' ')));
+      list.appendChild(li);
+    });
+  }
+
+  // One request per page view. POTA is volunteer-run; please don't poll.
+  fetch(API, { headers: { 'Accept': 'application/json' } })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function () { showMsg('Stats unavailable right now. See pota.app.'); });
+})();
+</script>
+</body>
+</html>
