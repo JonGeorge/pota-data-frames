@@ -37,24 +37,18 @@
   .recent-head { display: flex; justify-content: space-between; align-items: center; }
   .recent-head .src { font-size: 11px; color: var(--muted); text-decoration: none; }
   .recent-head .src:hover { color: var(--text-2); }
-  .list {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(5, auto); grid-auto-flow: column;
-    column-gap: 16px; row-gap: 2px;
-  }
-  .row { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 6px; font-size: 12px; color: var(--text-2); min-width: 0; font-variant-numeric: tabular-nums; }
+  .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 4px 8px; border-radius: 6px; font-size: 12px; color: var(--text-2); min-width: 0; font-variant-numeric: tabular-nums; }
   .row.shade { background: var(--tile); }
   .row .n { width: 18px; color: var(--muted); flex-shrink: 0; }
-  .row .act { font-weight: 700; font-size: 13px; color: var(--text); width: 78px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .row .ref { color: var(--accent); width: 64px; flex-shrink: 0; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .act { font-weight: 700; font-size: 13px; color: var(--text); width: 110px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .ref { color: var(--accent); width: 80px; flex-shrink: 0; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .row .ref:hover { text-decoration: underline; }
-  .row .loc { color: var(--label); width: 44px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .loc { color: var(--label); width: 56px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .row .bm { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .msg { font-size: 12px; color: var(--muted); padding: 4px 6px; }
+  .msg { font-size: 12px; color: var(--muted); padding: 4px 8px; }
   @media (max-width: 560px) {
     .top { flex-wrap: wrap; }
-    .list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
   }
 </style>
 </head>
@@ -99,11 +93,6 @@
   var COUNT = (c >= 1 && c <= 25) ? c : 10;
   var API = 'https://api.pota.app/profile/' + encodeURIComponent(CALLSIGN);
 
-  document.getElementById('call').textContent = CALLSIGN;
-  document.getElementById('profileLink').href = 'https://pota.app/#/profile/' + encodeURIComponent(CALLSIGN);
-  document.title = CALLSIGN + ' POTA Hunter';
-  document.querySelector('.recent-head .eyebrow').lastChild.textContent = 'LAST ' + COUNT + ' HUNTED';
-
   var list = document.getElementById('list');
 
   function el(tag, cls, text) {
@@ -125,9 +114,21 @@
   }
   function showMsg(text) {
     list.textContent = '';
-    list.style.gridTemplateRows = 'none';
     list.appendChild(el('li', 'msg', text));
   }
+
+  document.querySelector('.recent-head .eyebrow').textContent = 'LAST ' + COUNT + ' HUNTED';
+
+  // No valid callsign: say how to fix it instead of making a request.
+  if (!CALLSIGN) {
+    document.getElementById('call').textContent = '—';
+    showMsg('Add ?call=YOURCALL to this page’s URL.');
+    return;
+  }
+
+  document.getElementById('call').textContent = CALLSIGN;
+  document.getElementById('profileLink').href = 'https://pota.app/#/profile/' + encodeURIComponent(CALLSIGN);
+  document.title = CALLSIGN + ' POTA Hunter';
 
   function render(data) {
     var stats = (data && data.stats) || {};
@@ -145,11 +146,8 @@
     if (!qsos.length) { showMsg('No recent hunter contacts yet.'); return; }
 
     list.textContent = '';
-    var perCol = Math.ceil(qsos.length / 2);
-    list.style.gridTemplateRows = 'repeat(' + perCol + ', auto)';
-
     qsos.forEach(function (q, i) {
-      var li = el('li', 'row' + ((i % perCol) % 2 === 0 ? ' shade' : ''));
+      var li = el('li', 'row' + (i % 2 === 0 ? ' shade' : ''));
       var when = q.date ? new Date(q.date + 'Z') : null;
       li.title = [q.park, q.location, when && !isNaN(when) ? when.toUTCString().slice(5, 22) + ' UTC' : '']
         .filter(Boolean).join(' · ');
