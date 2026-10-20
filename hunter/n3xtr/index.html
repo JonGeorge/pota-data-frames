@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N3XTR POTA Hunter</title>
+<style>
+  :root {
+    --bg: #2E2720; --tile: #3B3229; --rule: #4A3F34;
+    --text: #F1EBE2; --text-2: #D8CFC2; --muted: #A89B8C;
+    --label: #B9C4A8; --accent: #D9875A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: Arial, Helvetica, sans-serif; color: var(--text); }
+  a { color: inherit; text-decoration: none; }
+  .card { width: 100%; max-width: 720px; background: var(--bg); border-radius: 16px;
+          padding: 16px 18px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .top { display: flex; align-items: center; gap: 16px; }
+  .id { display: flex; align-items: center; gap: 12px; padding-right: 16px; }
+  .badge { width: 44px; height: 44px; border-radius: 22px; background: var(--accent);
+           display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .eyebrow { font-size: 11px; letter-spacing: 2px; color: var(--label); }
+  .call { font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: .5px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex-grow: 1; }
+  .stat { background: var(--tile); border-radius: 12px; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .num { font-size: 24px; font-weight: 700; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .lbl { font-size: 11px; letter-spacing: 1px; color: var(--label); }
+  .recent { border-top: 1px solid var(--rule); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .recent-head { display: flex; justify-content: space-between; align-items: center; }
+  .stamp { font-size: 11px; color: var(--muted); }
+  .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 4px 8px; border-radius: 6px;
+         font-size: 12px; color: var(--text-2); min-width: 0; font-variant-numeric: tabular-nums; }
+  .row.shade { background: var(--tile); }
+  .row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+  .n { width: 18px; color: var(--muted); }
+  .act { font-weight: 700; font-size: 13px; color: var(--text); width: 110px; }
+  .ref { color: var(--accent); width: 80px; }
+  .loc { color: var(--label); width: 56px; }
+  .bm { color: var(--muted); width: 70px; }
+  .row span.park { flex-shrink: 1; min-width: 0; }
+  .msg { font-size: 12px; color: var(--muted); padding: 4px 8px; }
+  @media (max-width: 560px) { .top { flex-wrap: wrap; } .row span.park { display: none; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <div class="id">
+      <div class="badge"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E2720" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 19l7-12 4 6 2-3 7 9z"></path><path d="M7 19c2-2 4-2 6 0"></path></svg></div>
+      <div><div class="eyebrow">POTA HUNTER</div><div class="call">N3XTR</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">71</div><div class="lbl">PARKS</div></div>
+      <div class="stat"><div class="num">94</div><div class="lbl">QSOS</div></div>
+      <div class="stat"><div class="num">6</div><div class="lbl">AWARDS</div></div>
+    </div>
+  </div>
+  <div class="recent">
+    <div class="recent-head">
+      <div class="eyebrow">LAST 10 HUNTED</div>
+      <div class="stamp">pota.app · updated 20 Oct 00:50 UTC</div>
+    </div>
+    <ol class="list">
+      <li class="row shade" title="Guana River Wildlife Management Area · US-FL · 2026-10-19 22:10 UTC"><span class="n">01</span><span class="act">KG1A</span><span class="ref">US-6305</span><span class="loc">FL</span><span class="bm">20M CW</span><span class="park">Guana River Wildlife Management Area</span></li><li class="row" title="Pinnacles National Park · US-CA · 2026-10-18 21:19 UTC"><span class="n">02</span><span class="act">N6HU</span><span class="ref">US-0640</span><span class="loc">CA</span><span class="bm">20M CW</span><span class="park">Pinnacles National Park</span></li><li class="row shade" title="Champoeg State Park · US-OR · 2026-10-18 21:06 UTC"><span class="n">03</span><span class="act">NI6L</span><span class="ref">US-6434</span><span class="loc">OR</span><span class="bm">20M CW</span><span class="park">Champoeg State Park</span></li><li class="row" title="Pilgrim Memorial State Park · US-MA · 2026-10-18 20:41 UTC"><span class="n">04</span><span class="act">K1TH</span><span class="ref">US-2453</span><span class="loc">MA</span><span class="bm">40M CW</span><span class="park">Pilgrim Memorial State Park</span></li><li class="row shade" title="Russell-Shea State Forest · US-NH · 2026-10-18 20:28 UTC"><span class="n">05</span><span class="act">KA1UUM</span><span class="ref">US-4954</span><span class="loc">NH</span><span class="bm">40M CW</span><span class="park">Russell-Shea State Forest</span></li><li class="row" title="James A. Reed Memorial Wildlife Area · US-MO · 2026-10-18 20:06 UTC"><span class="n">06</span><span class="act">N1CCC</span><span class="ref">US-5712</span><span class="loc">MO</span><span class="bm">15M CW</span><span class="park">James A. Reed Memorial Wildlife Area</span></li><li class="row shade" title="Russell-Shea State Forest · US-NH · 2026-10-18 20:02 UTC"><span class="n">07</span><span class="act">KA1UUM</span><span class="ref">US-4954</span><span class="loc">NH</span><span class="bm">20M CW</span><span class="park">Russell-Shea State Forest</span></li><li class="row" title="Luce Line State Trail · US-MN · 2026-10-18 19:59 UTC"><span class="n">08</span><span class="act">K0LAR</span><span class="ref">US-9387</span><span class="loc">MN</span><span class="bm">20M CW</span><span class="park">Luce Line State Trail</span></li><li class="row shade" title="Pinchot State Forest · US-PA · 2026-10-18 19:36 UTC"><span class="n">09</span><span class="act">W3O</span><span class="ref">US-5473</span><span class="loc">PA</span><span class="bm">20M CW</span><span class="park">Pinchot State Forest</span></li><li class="row" title="Chalco Hills State Recreation Area · US-NE · 2026-10-18 19:34 UTC"><span class="n">10</span><span class="act">WB0RLJ</span><span class="ref">US-4011</span><span class="loc">NE</span><span class="bm">20M CW</span><span class="park">Chalco Hills State Recreation Area</span></li>
+    </ol>
+  </div>
+</div>
+</body>
+</html>
