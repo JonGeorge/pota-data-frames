@@ -1,0 +1,49 @@
+name: Update POTA hunter widget
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours, at :17 past (UTC)
+  workflow_dispatch:          # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write             # lets the job commit the updated page
+
+concurrency:
+  group: hunter-widget
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    env:
+      CALLS: "N3XTR"          # space-separated, e.g. "N3XTR KC3JTE"
+      COUNT: "10"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Render HTML pages
+        run: |
+          status=0
+          for call in $CALLS; do
+            lower=$(echo "$call" | tr 'A-Z/' 'a-z-')
+            python scripts/render_hunter_html.py --call "$call" --count "$COUNT" --out "hunter/${lower}/index.html" || status=1
+            sleep 2   # be gentle with the POTA API
+          done
+          exit $status
+
+      - name: Commit if changed
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add hunter
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Update POTA hunter widget"
+            git push
+          fi
