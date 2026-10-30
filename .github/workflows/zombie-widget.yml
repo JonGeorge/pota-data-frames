@@ -10,13 +10,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: zombie-widget
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -28,16 +26,17 @@ jobs:
           python-version: "3.12"
       - name: Build widget page from CSV
         run: python zombie-shuffle/scripts/build_widget.py
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add zombie-shuffle/index.html
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Update Zombies Worked widget"
+            # the hunter widget commits on its own schedule; rebase in case it just pushed
+            git pull --rebase --autostash
+            git push
+          fi
+          
