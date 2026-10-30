@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="300">
+<title>Zombies worked by N3XTR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@400;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root {
+  --bg: #1d1529; --panel: #170f22; --ink: #f2eadc; --muted: #ab9fbd; --line: #362a49;
+  --pumpkin: #ff8a2a; --night: #b79cf0; --slime: #9be15d; --slime-soft: #1f3314;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.4 "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; overflow: hidden; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+h1 { margin: 0; font: 400 28px/1 "Creepster", "Chiller", Impact, fantasy; letter-spacing: .03em; color: var(--night);
+  display: flex; align-items: center; gap: 8px; }
+h1 i { width: 10px; height: 10px; border-radius: 50%; background: var(--pumpkin); box-shadow: 0 0 10px var(--pumpkin); }
+.upd { font: 500 12px "IBM Plex Mono", ui-monospace, monospace; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; min-width: 0; }
+.stat b { display: block; font: 600 18px "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.stat.score { background: radial-gradient(circle at 30% 20%, #ffb15c, var(--pumpkin) 65%); border-color: var(--pumpkin); color: #1a1006; }
+.stat.score span { color: #1a1006; opacity: .75; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table { width: 100%; border-collapse: collapse; font: 500 14px "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+th { position: sticky; top: 0; background: var(--panel); text-align: left; font: 600 11px "Fredoka", system-ui, sans-serif;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 7px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.t span { color: var(--muted); }
+td.b { color: var(--muted); }
+td.c { font-weight: 600; color: var(--ink); }
+td.n { color: var(--pumpkin); }
+tr.bonus td.c { color: var(--slime); }
+td.tag span { font: 700 10px "Fredoka", system-ui, sans-serif; letter-spacing: .06em; color: var(--slime);
+  background: var(--slime-soft); border: 1px solid var(--slime); padding: 1px 7px; border-radius: 999px; }
+.more { margin: 0; font-size: 12px; color: var(--muted); text-align: right; }
+.empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  gap: 4px; border: 1px dashed #6a52a0; border-radius: 8px; color: var(--muted); padding: 16px; }
+.empty strong { font: 400 22px "Creepster", fantasy; letter-spacing: .03em; color: var(--pumpkin); }
+@media (max-width: 480px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  th:nth-child(2), td:nth-child(2), th:nth-child(4), td:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1><i aria-hidden="true"></i>Zombies worked</h1>
+  <span class="upd">updated 12:28Z Oct 30 · –</span>
+</header>
+<div class="stats">
+  <div class="stat"><span>QSOs</span><b>0</b></div>
+  <div class="stat"><span>Bonus</span><b>0</b></div>
+  <div class="stat"><span>States/Prov</span><b>0</b></div>
+  <div class="stat score"><span>Est. score</span><b>0</b></div>
+</div>
+<div class="empty"><strong>No zombies in the crypt yet</strong>
+The log updates on dinner breaks. Listen for CQ BOO near 7.030 and 7.040.</div>
+</body>
+</html>
