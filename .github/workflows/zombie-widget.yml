@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build widget page from CSV
-        run: python scripts/build_widget.py
+        run: python zombie-shuffle/scripts/build_widget.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
