@@ -1,2 +1,2 @@
 Date,Time_Local,Time_UTC,Band,Freq_MHz,Mode,Power_W,Call,RST_Sent,RST_Rcvd,SPC_Rcvd,Zombie_Nr_Rcvd,Zombie_Name_Rcvd,Bonus_Station,Notes
-2026-10-30,,,,,CW,5,,,,,,,,
+2026-10-30,1707,2107,20m,14.055,CW,5,W9BMK,599,599,IL,2307,BRIAN,,
