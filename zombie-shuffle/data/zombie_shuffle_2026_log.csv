@@ -1,3 +1,2 @@
 Date,Time_Local,Time_UTC,Band,Freq_MHz,Mode,Power_W,Call,RST_Sent,RST_Rcvd,SPC_Rcvd,Zombie_Nr_Rcvd,Zombie_Name_Rcvd,Bonus_Station,Notes
-2026-10-30,0715,1115,40m,7.030,CW,5,AB3BC,599,599,FL,122,SPARK,,
-2026-10-30,0725,1125,40m,7.030,CW,5,DI4MM,599,599,FL,383,SPARK,,
+2026-10-30,,,,,CW,5,,,,,,,,
