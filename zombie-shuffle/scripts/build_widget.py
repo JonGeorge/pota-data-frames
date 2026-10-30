@@ -2,7 +2,9 @@
 """Build the N3XTR "Zombies worked" widget from Zombie Shuffle Logger CSV exports.
 
 Reads every *.csv in data/ (merging and de-duplicating rows), and writes a single
-self-contained page to _site/index.html for GitHub Pages. Standard library only.
+self-contained page. By default that is index.html in the folder above scripts/
+(zombie-shuffle/index.html in this repo), which GitHub Pages serves from the branch,
+the same way the POTA hunter widget works. Standard library only.
 
 Only public-safe fields are published: time, band, call, SPC, zombie name, bonus.
 RST, frequency, power and your Notes column never leave the CSV.
@@ -11,13 +13,16 @@ from __future__ import annotations
 
 import csv
 import html
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# data/ and the output index.html both sit next to scripts/ (zombie-shuffle/).
+# Set WIDGET_OUT to a folder to write somewhere else.
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-OUT = ROOT / "_site"
+OUT = Path(os.environ.get("WIDGET_OUT") or ROOT).resolve()
 
 MY_CALL = "N3XTR"
 MAX_ROWS = 12          # rows shown in the widget, newest first
@@ -190,11 +195,12 @@ def main() -> int:
     if not DATA.is_dir():
         print(f"No data/ folder at {DATA}", file=sys.stderr)
         return 1
+    csvs = sorted(DATA.glob("*.csv"))
+    print(f"Reading {len(csvs)} CSV file(s) from {DATA}: {', '.join(p.name for p in csvs) or 'none'}")
     rows = load_rows()
-    OUT.mkdir(exist_ok=True)
+    OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "index.html").write_text(render(rows), encoding="utf-8")
-    (OUT / ".nojekyll").write_text("", encoding="utf-8")
-    print(f"Built _site/index.html with {len(rows)} QSO(s)")
+    print(f"Built {OUT / 'index.html'} with {len(rows)} QSO(s)")
     return 0
 
 
